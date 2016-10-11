@@ -71,7 +71,7 @@ public class SecretTeamsCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(Main.PREFIX + "Usage: /secretteams <info|enable|disable>");
+            sender.sendMessage(Main.PREFIX + "Usage: /secretteams <info|enable|disable|killreveal>");
             return true;
         }
 
@@ -98,10 +98,6 @@ public class SecretTeamsCommand implements CommandExecutor, TabCompleter {
             enabled = true;
 
             manager.addPacketListener(adapter);
-
-            if (plugin.getConfig().getBoolean("enableKillReveal", false)) {
-                Bukkit.getPluginManager().registerEvents(listener, plugin);
-            }
             return true;
         }
 
@@ -120,14 +116,36 @@ public class SecretTeamsCommand implements CommandExecutor, TabCompleter {
             enabled = false;
 
             manager.removePacketListener(adapter);
+            return true;
+        }
 
-            if (plugin.getConfig().getBoolean("enableKillReveal", false)) {
+        if (args[0].equalsIgnoreCase("killreveal")) {
+            if (!sender.hasPermission(PERMISSION)) {
+                sender.sendMessage(ChatColor.RED + "You don't have permission.");
+                return true;
+            }
+
+            if (!enabled) {
+                sender.sendMessage(Main.PREFIX + "Secret Teams is not enabled.");
+                return true;
+            }
+
+            if (plugin.killreveal) {
+                plugin.broadcast(Main.PREFIX + "Kill Reveal has been disabled.");
                 HandlerList.unregisterAll(listener);
+
+                plugin.killreveal = false;
+                plugin.hasAKill.clear();
+            } else {
+                plugin.broadcast(Main.PREFIX + "Kill Reveal has been enabled.");
+
+                Bukkit.getPluginManager().registerEvents(listener, plugin);
+                plugin.killreveal = true;
             }
             return true;
         }
 
-        sender.sendMessage(Main.PREFIX + "Usage: /secretteams <info|enable|disable>");
+        sender.sendMessage(Main.PREFIX + "Usage: /secretteams <info|enable|disable|killreveal>");
         return true;
     }
 
@@ -145,6 +163,7 @@ public class SecretTeamsCommand implements CommandExecutor, TabCompleter {
         if (sender.hasPermission(PERMISSION)) {
             list.add("enable");
             list.add("disable");
+            list.add("killreveal");
         }
 
         // make sure to only tab complete what starts with what they

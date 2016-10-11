@@ -46,21 +46,13 @@ import java.util.UUID;
 public class Main extends JavaPlugin {
     public static final String PREFIX = "§cSecret Teams §8» §7";
 
-    public final Set<UUID> hasAKill = Sets.newHashSet();
+    public final Set<String> hasAKill = Sets.newHashSet();
+    public boolean killreveal = false;
 
     @Override
     public void onEnable() {
-        reloadConfig();
-
-        getConfig().addDefault("enableKillReveal", false);
-        getConfig().options().copyDefaults(true);
-
-        saveConfig();
-
-        TeamManager teams = new TeamManager();
-
         TeamUpdateAdapter adapter = new TeamUpdateAdapter(this);
-        KillListener listener = new KillListener(this, teams);
+        KillListener listener = new KillListener(this);
 
         SecretTeamsCommand cmd = new SecretTeamsCommand(this, listener, adapter);
 
