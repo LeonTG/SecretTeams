@@ -70,8 +70,8 @@ public class KillListener implements Listener {
             return;
         }
 
-        if (plugin.hasAKill.contains(killer.getUniqueId())) {
-            plugin.hasAKill.add(killer.getUniqueId());
+        if (!plugin.hasAKill.contains(killer.getName())) {
+            plugin.hasAKill.add(killer.getName());
         }
 
         team.removePlayer(killer);
