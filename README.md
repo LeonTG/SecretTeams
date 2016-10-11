@@ -14,6 +14,13 @@ If you are using this and not having the kill reveal feature make sure to uncolo
 
 ___
 
+
+**NOTE:** The following plugin is REQUIRED to make this work
+
+[**ProtocolLib**](https://www.spigotmc.org/resources/protocollib.1997/download?version=69182)
+
+___
+
 **Commands:**
 
 `/secretteams info` - *View scenario information.*
