@@ -30,11 +30,13 @@ package com.leontg77.secretteams.protocol;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.StructureModifier;
 import com.leontg77.secretteams.Main;
-import org.bukkit.Bukkit;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Team update adapter class.
@@ -42,18 +44,41 @@ import java.util.Arrays;
  * @author LeonTG77
  */
 public class TeamUpdateAdapter extends PacketAdapter {
+    private final Main plugin;
 
     public TeamUpdateAdapter(Main plugin) {
         super(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.SCOREBOARD_TEAM);
+
+        this.plugin = plugin;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onPacketSending(PacketEvent event) {
         if (!event.getPacketType().equals(PacketType.Play.Server.SCOREBOARD_TEAM)) {
             return;
         }
 
-        Bukkit.broadcastMessage(event.getPacket().getBytes().read(0) + "");
-        Bukkit.broadcastMessage(Arrays.toString(event.getPacket().getStringArrays().read(0)) + "");
+        PacketContainer packet = event.getPacket();
+        int mode = packet.getIntegers().read(1);
+
+        if (mode != 0 && mode != 3) {
+            return;
+        }
+
+        StructureModifier<Collection> arrays = packet.getSpecificModifier(Collection.class);
+
+        Collection<String> teammates = (Collection<String>) arrays.read(0);
+        Iterator<String> it = teammates.iterator();
+
+        while (it.hasNext()) {
+            String teammate = it.next();
+
+            if (!plugin.hasAKill.contains(teammate)) {
+                it.remove();
+            }
+        }
+
+        arrays.write(0, teammates);
     }
 }
