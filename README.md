@@ -35,7 +35,7 @@ ___
 
 **Permissions:**
 
-`secretteams.manage` - *Permission to use* `/desirebpve enable`, `/desirebpve disable` *and* `/desirebpve killreveal`
+`secretteams.manage` - *Permission to use* `/secretteams enable`, `/secretteams disable` *and* `/secretteams killreveal`
 
 ___
 
