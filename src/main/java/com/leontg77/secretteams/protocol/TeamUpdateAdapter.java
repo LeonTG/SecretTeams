@@ -34,9 +34,12 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.leontg77.secretteams.Main;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  * Team update adapter class.
@@ -73,8 +76,16 @@ public class TeamUpdateAdapter extends PacketAdapter {
 
         while (it.hasNext()) {
             String teammate = it.next();
+            OfflinePlayer offline = Bukkit.getOfflinePlayer(teammate);
 
-            if (!plugin.hasAKill.contains(teammate)) {
+            if (offline == null) {
+                Bukkit.getLogger().severe("Could not hide " + teammate + "'s from his team.");
+                break;
+            }
+
+            UUID uuid = offline.getUniqueId();
+
+            if (!plugin.hasAKill.contains(uuid)) {
                 it.remove();
             }
         }

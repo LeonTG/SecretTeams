@@ -46,7 +46,7 @@ import java.util.UUID;
 public class Main extends JavaPlugin {
     public static final String PREFIX = "§cSecret Teams §8» §7";
 
-    public final Set<String> hasAKill = Sets.newHashSet();
+    public final Set<UUID> hasAKill = Sets.newHashSet();
     public boolean killreveal = false;
 
     @Override
